@@ -58,23 +58,9 @@ extern int WINAPI ShimMainCRTStartup() __attribute__((used));
 #endif
 
 extern int WINAPI ShimMainCRTStartup() {
-	BOOL win_sse42_supported = FALSE;
-	BOOL cpuid_sse42_supported = FALSE;
-
-	int cpuinfo[4];
-	__cpuid(cpuinfo, 0x01);
-
-	win_sse42_supported = IsProcessorFeaturePresent(PF_SSE4_2_INSTRUCTIONS_AVAILABLE);
-	cpuid_sse42_supported = cpuinfo[2] & (1 << 20);
-
-	if (win_sse42_supported || cpuid_sse42_supported) {
 #ifdef WINDOWS_SUBSYSTEM_CONSOLE
-		return mainCRTStartup();
+	return mainCRTStartup();
 #else
-		return WinMainCRTStartup();
+	return WinMainCRTStartup();
 #endif
-	} else {
-		MessageBoxW(NULL, L"A CPU with SSE4.2 instruction set support is required.", L"Godot Engine", MB_OK | MB_ICONEXCLAMATION | MB_TASKMODAL);
-		return -1;
-	}
 }
